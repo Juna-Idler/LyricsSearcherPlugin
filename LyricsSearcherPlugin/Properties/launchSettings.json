@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LyricsSearcherPlugin": {
+      "commandName": "Executable",
+      "executablePath": "..\\..\\..\\..\\Test\\bin\\Debug\\net5.0-windows\\Test.exe"
+    }
+  }
+}
