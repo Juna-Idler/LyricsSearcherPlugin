@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -46,12 +47,29 @@ namespace Test
                     if (Searcher == null)
                         return;
                 }
+                
                 string[] result = Searcher.Search(TextBoxTitle.Text, new string[] { TextBoxArtist.Text }, TextBoxAlbum.Text, TextBoxPath.Text, TextBoxParam.Text);
-                TextBoxResult.Text = string.Join("\n========== multi result separate ==========\n", result);
+                if (result != null)
+                {
+                    TextBoxResult.Text = string.Join("\n========== multi result separate ==========\n", result);
+                    if (result.Length > 0)
+                    {
+                        string[] url = result[0].Split("\n", 2);
+                        if (url[0].IndexOf("http") == 0)
+                        {
+                            ProcessStartInfo pi = new ProcessStartInfo()
+                            {
+                                FileName = url[0],
+                                UseShellExecute = true,
+                            };
+                            Process.Start(pi);
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
-                TextBoxResult.Text = "例外が発生しました。\n" + e.Message;
+                TextBoxResult.Text += "例外が発生しました。\n" + e.Message;
                 return;
             }
         }

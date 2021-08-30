@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LyricsSearcherPlugin", "LyricsSearcherPlugin\LyricsSearcherPlugin.csproj", "{3822E432-E680-4B85-A98F-8F50C5F4FF69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{A6E14488-6D38-4687-976F-59D52CBF772E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3822E432-E680-4B85-A98F-8F50C5F4FF69} = {3822E432-E680-4B85-A98F-8F50C5F4FF69}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

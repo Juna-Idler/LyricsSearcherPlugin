@@ -1,4 +1,7 @@
-﻿
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+using LyricsSearcherPlugin;
 
 //アセンブリ名はユニークなものへ変更
 //
@@ -14,8 +17,56 @@ namespace Titalyver2
                                string path,     //ファイルの場合ファイルのパス
                                string param)    //SeachListに書かれたパラメータ
         {
-            string testoutput = "Test Plugin String\n" + title + "\n" + artists[0] + "\n" + album + "\n" + path + "\n" + param;
-            return new string[] { testoutput,"multitest" };
+            タイムタグ情報DataBase.SearchOrder[] orders =
+                タイムタグ情報DataBase.Search(title, artists[0], "", album);
+            if (orders == null)
+                return null;
+
+            List<string> result = new();
+
+            foreach (タイムタグ情報DataBase.SearchOrder order in orders)
+            {
+                if (order.Hit < 70)
+                    break;
+
+                List<string> lyricss = new();
+                if (!HtmlLyricsSiteList.List.ContainsKey(order.Website))
+                    continue;
+                HtmlLyricsSiteSnatcher.ListData[] lists = HtmlLyricsSiteSnatcher.GetList(HtmlLyricsSiteList.List[order.Website].ListParameter, order.Title, order.Artist);
+                if (lists != null)
+                {
+                    foreach (var list in lists)
+                    {
+                        string lyrics = HtmlLyricsSiteSnatcher.GetLyrics(list.LyricsPageUrl, HtmlLyricsSiteList.List[order.Website].LyricsParameter);
+                        if (lyrics != null)
+                        {
+                            lyrics = list.LyricsPageUrl + "\0" + lyrics;
+                            if ( list.Title == order.Title &&  list.Artist == order.Artist)
+                            {
+                                lyricss.Clear();
+                                lyricss.Add(lyrics);
+                                break;
+                            }
+                            lyricss.Add(lyrics);
+                        }
+                    }
+                }
+
+                if (lyricss.Count > 0)
+                {
+//                    string timetag = タイムタグ情報DataBase.Get(order.Key);
+
+                    foreach(string lyrics in lyricss)
+                    {
+                        string[] url = lyrics.Split("\0", 2);
+                        string timetaged_lyrics = タイムタグ情報DataBase.Apply(order.Key, url[1]);
+                        result.Add(url[0] + "\n" + timetaged_lyrics);
+                    }
+
+                }
+            }
+
+            return result.ToArray();
         }
     }
 }
