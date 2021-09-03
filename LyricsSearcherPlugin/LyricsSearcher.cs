@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 using LyricsSearcherPlugin;
 
@@ -29,40 +30,42 @@ namespace Titalyver2
                 if (order.Hit < 70)
                     break;
 
-                List<string> lyricss = new();
+                string lyrics = null;
                 if (!HtmlLyricsSiteList.List.ContainsKey(order.Website))
                     continue;
-                HtmlLyricsSiteSnatcher.ListData[] lists = HtmlLyricsSiteSnatcher.GetList(HtmlLyricsSiteList.List[order.Website].ListParameter, order.Title, order.Artist);
+                HtmlLyricsSiteSnatcher.ListData[] lists = HtmlLyricsSiteSnatcher.GetList(HtmlLyricsSiteList.List[order.Website].ListParameter, order.Title, order.Artist, HtmlLyricsSiteList.List[order.Website].Encoding);
                 if (lists != null)
                 {
                     foreach (var list in lists)
                     {
-                        string lyrics = HtmlLyricsSiteSnatcher.GetLyrics(list.LyricsPageUrl, HtmlLyricsSiteList.List[order.Website].LyricsParameter);
-                        if (lyrics != null)
+                        if (list.Title == order.Title && list.Artist == order.Artist)
                         {
-                            lyrics = list.LyricsPageUrl + "\0" + lyrics;
-                            if ( list.Title == order.Title &&  list.Artist == order.Artist)
+                            lyrics = HtmlLyricsSiteSnatcher.GetLyrics(list.LyricsPageUrl, HtmlLyricsSiteList.List[order.Website].LyricsParameter);
+                            if (lyrics != null)
                             {
-                                lyricss.Clear();
-                                lyricss.Add(lyrics);
+                                lyrics = list.LyricsPageUrl + "\n" + lyrics;
+
+                                ProcessStartInfo pi = new()
+                                {
+                                    FileName = list.LyricsPageUrl.AbsoluteUri,
+                                    UseShellExecute = true,
+                                };
+                                Process.Start(pi);
+
                                 break;
                             }
-                            lyricss.Add(lyrics);
                         }
+
                     }
                 }
 
-                if (lyricss.Count > 0)
+                if (lyrics != null)
                 {
 //                    string timetag = タイムタグ情報DataBase.Get(order.Key);
 
-                    foreach(string lyrics in lyricss)
-                    {
-                        string[] url = lyrics.Split("\0", 2);
-                        string timetaged_lyrics = タイムタグ情報DataBase.Apply(order.Key, url[1]);
-                        result.Add(url[0] + "\n" + timetaged_lyrics);
-                    }
-
+                    string[] url = lyrics.Split("\n", 2);
+                    string timetaged_lyrics = タイムタグ情報DataBase.Apply(order.Key, url[1]);
+                    result.Add(url[0] + "\n" + timetaged_lyrics);
                 }
             }
 

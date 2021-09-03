@@ -52,19 +52,6 @@ namespace Test
                 if (result != null)
                 {
                     TextBoxResult.Text = string.Join("\n========== multi result separate ==========\n", result);
-                    if (result.Length > 0)
-                    {
-                        string[] url = result[0].Split("\n", 2);
-                        if (url[0].IndexOf("http") == 0)
-                        {
-                            ProcessStartInfo pi = new ProcessStartInfo()
-                            {
-                                FileName = url[0],
-                                UseShellExecute = true,
-                            };
-                            Process.Start(pi);
-                        }
-                    }
                 }
             }
             catch (Exception e)
