@@ -30,7 +30,9 @@ namespace Test
             InitializeComponent();
         }
 
-        private static readonly string dllpath = @"..\..\..\..\LyricsSearcherPlugin\bin\Debug\net5.0";
+        private static readonly string dllpath = @"..\..\..\..\TTDBLyricsSearcherPlugin\bin\Debug\net5.0";
+        //        private static readonly string dllpath = @"..\..\..\..\MyDBLyricsSearcherPlugin\bin\Debug\net5.0";
+//        private static readonly string dllpath = @"..\..\..\..\HtmlLyricsSitePlugin\bin\Debug\net5.0";
 
         private dynamic Searcher;
         private void Button_Click(object sender, RoutedEventArgs eve)
