@@ -25,6 +25,7 @@ namespace Titalyver2
             public string Title { get; set; }
             public string Artist { get; set; }
             public string Website { get; set; }
+            public string Tagging { get; set; }
         }
 
 
@@ -41,7 +42,7 @@ namespace Titalyver2
             HttpResponseMessage response;
             try
             {
-                string param = $"MODE=Search&SEARCH={title}%3c%3e{artist}%3c%3e{website}%3c%3e{album}&ORDER=hit+key+title+artist+website";
+                string param = $"MODE=Search&SEARCH={title}%3c%3e{artist}%3c%3e{website}%3c%3e{album}&ORDER=hit+key+title+artist+website+tagging";
                 response = client.GetAsync(url + param).Result;
             }
             catch (Exception e)
@@ -90,6 +91,9 @@ namespace Titalyver2
                         break;
                     case "website":
                         current.Website = pair[1];
+                        break;
+                    case "tagging":
+                        current.Tagging = pair[1];
                         break;
                 }
             }
@@ -151,5 +155,8 @@ namespace Titalyver2
 
             return content[(timetag_start + 8)..timetag_end];
         }
+
+
+
     }
 }

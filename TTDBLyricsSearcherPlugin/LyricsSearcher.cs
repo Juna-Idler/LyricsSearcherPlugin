@@ -16,8 +16,6 @@ namespace Titalyver2
 {
     public class LyricsSearcher
     {
-        private string JsonPath;
-        private HtmlLyricsSiteScraper.SiteParameter[] SiteList;
 
         public string[] Search(string title,
                                string[] artists,
@@ -25,19 +23,7 @@ namespace Titalyver2
                                string path,     //ファイルの場合ファイルのパス
                                string param)    //SeachListに書かれたパラメータ
         {
-            if (JsonPath == null)
-            {
-                string assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string directory = Path.GetDirectoryName(assemblyPath);
-                JsonPath = Path.Combine(directory, "HtmlLyricsSitePluginSettings.json");
-            }
-
-            if (SiteList == null)
-            {
-                using FileStream fs = File.OpenRead(JsonPath);
-                var task = JsonSerializer.DeserializeAsync<HtmlLyricsSiteScraper.SiteParameter[]>(fs);
-                SiteList = task.AsTask().Result;
-            }
+            var siteList = JsonSerializer.Deserialize<HtmlLyricsSiteScraper.SiteParameter[]>(TTDBLyricsSearcherPlugin.Properties.Resources.HtmlLyricsSiteList);
 
             タイムタグ情報DataBase.SearchOrder[] orders =
                     タイムタグ情報DataBase.Search(title, string.Join(" ",artists), "", album);
@@ -52,12 +38,12 @@ namespace Titalyver2
                     break;
 
                 string lyrics = null;
-                int i = Array.FindIndex(SiteList, a => order.Website == a.Name);
+                int i = Array.FindIndex(siteList, a => order.Website == a.Name);
                 if (i < 0)
                     continue;
 
                 string artist = Regex.Replace(order.Artist, @"\(.*\)", "").Trim();
-                HtmlLyricsSiteScraper.ListData[] lists = HtmlLyricsSiteScraper.GetList(SiteList[i], order.Title, artist);
+                HtmlLyricsSiteScraper.ListData[] lists = HtmlLyricsSiteScraper.GetList(siteList[i], order.Title, artist);
                 if (lists == null)
                     continue;
 
@@ -65,7 +51,7 @@ namespace Titalyver2
                 {
                     if (list.Title == order.Title && list.Artist.Contains(artist))
                     {
-                        lyrics = HtmlLyricsSiteScraper.GetLyrics(list.LyricsPageUrl, SiteList[i]);
+                        lyrics = HtmlLyricsSiteScraper.GetLyrics(list.LyricsPageUrl, siteList[i]);
                         if (lyrics != null)
                         {
                             lyrics = list.LyricsPageUrl + "\n" + lyrics;
@@ -87,7 +73,7 @@ namespace Titalyver2
 
                     string[] url = lyrics.Split("\n", 2);
                     string timetaged_lyrics = タイムタグ情報DataBase.Apply(order.Key, url[1]);
-                    result.Add(url[0] + "\n" + timetaged_lyrics);
+                    result.Add($"{url[0]}\n@TaggingBy={order.Tagging}\n{timetaged_lyrics}");
                 }
             }
 

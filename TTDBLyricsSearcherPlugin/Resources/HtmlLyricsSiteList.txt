@@ -1,0 +1,85 @@
+﻿[
+  {
+    "Name": "うたまっぷ",
+    "Encoding": "shift_jis",
+    "Url": "https://www.utamap.com",
+    "ParamFormat": "/searchkasi.php?searchname=title&word={title}&act=search&search_by_keyword=%8C%9F%26%23160%3B%26%23160%3B%26%23160%3B%8D%F5&sortname=1&pattern=4",
+    "ListBlockRegex": "<th class=ct bgcolor=#f3ffe6>タイアップ情報</th>\\s*</tr>(.+?)\\s*</table>",
+    "ListItemRegex": "<tr bgColor=#ffffff>(.+?)</tr>",
+    "ItemUrlRegex": "<A href=\"(.+?)\">",
+    "ItemTitleRegex": "<A href=\"[^\"]+\">(.+)</a>",
+    "ItemArtistRegex": "^\\s*<TD.*?</td>\\s*<TD[^>]*>(.+?)</td>",
+    "LyricsBlockRegex": "<!-- 歌詞 --><td.*?>(.+?)<!-- 歌詞 end -->",
+    "LyricsReplacers": [
+      {
+        "Regex": "(^\\s+|\\r\\n|\\n|\\r|\\s+$)",
+        "ReplaceText": ""
+      },
+      {
+        "Regex": "<br[^>]*>",
+        "ReplaceText": "\n"
+      },
+      {
+        "Regex": "<[^>]*>",
+        "ReplaceText": ""
+      }
+    ]
+  },
+  {
+    "Name": "歌ネット",
+    "Encoding": "utf-8",
+    "Url": "https://www.uta-net.com",
+    "ParamFormat": "/search/?Aselect=2&Keyword={title}&Bselect=4",
+    "ListBlockRegex": "<table summary=\"曲一覧1\">.*?<tbody>(.+?)</tbody>",
+    "ListItemRegex": "<tr>(.+?)</tr>",
+    "ItemUrlRegex": "<a href=\"(.+?)\">",
+    "ItemTitleRegex": "<a href=\".+?\">(.+?)</a>",
+    "ItemArtistRegex": "<a href=\".+?\">.+?</a>.+?<a href=\".+?\">(.+?)</a>",
+    "LyricsBlockRegex": "<div id=\"kashi_area\" itemprop=\"text\">(.+?)</div>",
+    "LyricsReplacers": [
+      {
+        "Regex": "(^\\s+|\\r\\n|\\n|\\r|\\s+$)",
+        "ReplaceText": ""
+      },
+      {
+        "Regex": "<br[^>]*>",
+        "ReplaceText": "\n"
+      },
+      {
+        "Regex": "<[^>]*>",
+        "ReplaceText": ""
+      }
+    ]
+
+  },
+  {
+    "Name": "歌詞GET!!",
+    "Encoding": "utf-8",
+    "Url": "http://www.kget.jp",
+    "ParamFormat": "/search/index.php?c=0&r={artist}&t={title}&v=&f=",
+    "ListBlockRegex": "<ul class=\"songlist\">(.+?)</ul>",
+    "ListItemRegex": "<li>(.+?)</li>",
+    "ItemUrlRegex": "<a class=\"lyric-anchor\" href=\"(.+?)\">",
+    "ItemTitleRegex": "<h2 class=\"title\">(.+?)</h2>",
+    "ItemArtistRegex": "<p class=\"artist\"><a href=[^>]+>(.+?)</a></p>",
+    "LyricsBlockRegex": "<div id=\"lyric-trunk\">(.+?)</div>",
+    "LyricsReplacers": [
+      {
+        "Regex": "(^\\s+|\\r\\n|\\n|\\r|\\s+$)",
+        "ReplaceText": ""
+      },
+      {
+        "Regex": "<a[^>]*>.*?</a>",
+        "ReplaceText": ""
+      },
+      {
+        "Regex": "<br[^>]*>",
+        "ReplaceText": "\n"
+      },
+      {
+        "Regex": "<[^>]*>",
+        "ReplaceText": ""
+      }
+    ]
+  }
+]
