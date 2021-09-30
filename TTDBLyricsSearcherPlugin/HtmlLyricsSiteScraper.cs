@@ -76,8 +76,8 @@ namespace LyricsSearcherPlugin
             }
 
             Encoding content_encoding = Encoding.GetEncoding(response.Content.Headers.ContentType.CharSet);
-            Stream stream = response.Content.ReadAsStream();
-            StreamReader sr = new(stream, content_encoding);
+            using Stream stream = response.Content.ReadAsStream();
+            using StreamReader sr = new(stream, content_encoding);
             string content = sr.ReadToEnd();
 
             List<ListData> lists = new();
@@ -119,12 +119,12 @@ namespace LyricsSearcherPlugin
                 return null;
             }
             Encoding content_encoding = Encoding.GetEncoding(response.Content.Headers.ContentType.CharSet);
-            Stream stream = response.Content.ReadAsStream();
-            StreamReader sr = new(stream, content_encoding);
+            using Stream stream = response.Content.ReadAsStream();
+            using StreamReader sr = new(stream, content_encoding);
             string content = sr.ReadToEnd();
 
             Match block = Regex.Match(content,param.LyricsBlockRegex, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            if (block == null)
+            if (!block.Success)
                 return null;
             string lyrics = block.Groups[1].Value;
             if (param.LyricsReplacers != null)
